@@ -48,7 +48,7 @@ fastapi-ai-chatbot/
 * [x] Email Validation
 * [x] Username Validation
 * [x] Password Policy Validation
-* [ ] User Login
+* [x] User Login
 * [ ] JWT Authentication
 * [ ] Protected Routes
 * [ ] Chatbot Access Control
