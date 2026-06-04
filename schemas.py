@@ -92,5 +92,4 @@ class LoginRequest(BaseModel):
 # =====================================
 
 class AIRequest(BaseModel):
-    username:str
     question:str
