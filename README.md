@@ -1,8 +1,8 @@
 # FastAPI AI Chatbot
 
-A secure AI-powered chatbot backend built using FastAPI, SQLAlchemy, SQLite, JWT Authentication, User Management, and Google Gemini AI.
+A secure AI-powered chatbot backend built using FastAPI, SQLAlchemy, SQLite, JWT Authentication, User Management, Chat History, Conversation Memory, and Google Gemini AI.
 
-This project demonstrates authentication, authorization, database integration, AI integration, and chat persistence using modern backend development practices.
+This project demonstrates authentication, authorization, database integration, AI integration, chat persistence, and clean project architecture using modern backend development practices.
 
 ---
 
@@ -18,8 +18,13 @@ This project demonstrates authentication, authorization, database integration, A
 * Protected Routes
 * Google Gemini AI Integration
 * User-specific Chat Storage
+* Conversation Memory
+* Chat History Retrieval
+* Delete Single Chat
+* Delete All Chats
 * SQLite Database Integration
 * Secure API Access using Bearer Token
+* Route-based Project Structure
 
 ---
 
@@ -47,6 +52,11 @@ fastapi-ai-chatbot/
 ├── auth.py
 ├── ai_service.py
 ├── schemas.py
+│
+├── routes/
+│   ├── auth_routes.py
+│   └── chat_routes.py
+│
 ├── requirements.txt
 ├── .env
 ├── .gitignore
@@ -65,11 +75,14 @@ fastapi-ai-chatbot/
 | POST   | /login     | Login and generate JWT token |
 | GET    | /protected | Verify JWT token             |
 
-### AI APIs
+### Chat APIs
 
-| Method | Endpoint | Description                     |
-| ------ | -------- | ------------------------------- |
-| POST   | /ask-ai  | Ask Gemini AI (Protected Route) |
+| Method | Endpoint                | Description           |
+| ------ | ----------------------- | --------------------- |
+| POST   | /ask-ai                 | Ask Gemini AI         |
+| GET    | /chat-history           | Get user chat history |
+| DELETE | /chat-history/{chat_id} | Delete a single chat  |
+| DELETE | /chat-history           | Delete all chats      |
 
 ---
 
@@ -120,9 +133,15 @@ User Question
       ↓
 JWT Verification
       ↓
+Load Previous Chat History
+      ↓
+Build Conversation Context
+      ↓
 Gemini AI
       ↓
-Store Chat Message
+Store User Message
+      ↓
+Store AI Response
       ↓
 Return Response
 ```
@@ -153,8 +172,11 @@ Return Response
 * [x] Protected Routes
 * [x] Gemini AI Integration
 * [x] User-specific Chat Storage
-* [ ] Chat History Retrieval API
-* [ ] Conversation Memory
+* [x] Chat History Retrieval API
+* [x] Conversation Memory
+* [x] Delete Single Chat
+* [x] Delete All Chats
+* [ ] Multiple Chat Sessions
 * [ ] Google Login
 * [ ] Refresh Tokens
 * [ ] Role-Based Authorization
@@ -165,9 +187,9 @@ Return Response
 
 ## Future Enhancements
 
-* Chat History API
-* Conversation Memory
 * Multiple Chat Sessions
+* PDF Upload & Document Chat
+* Image Upload & Analysis
 * Refresh Tokens
 * Google OAuth Login
 * Role-Based Access Control (RBAC)
@@ -195,11 +217,9 @@ pip install -r requirements.txt
 
 ### Create Environment Variables
 
-Create a `.env` file:
-
 ```env
 GEMINI_API_KEY=your_api_key_here
-JWT_SECRET_KEY=your_secret_key_here
+SECRET_KEY=your_secret_key_here
 ```
 
 ### Run Application
