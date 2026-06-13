@@ -1,4 +1,4 @@
-# FastAPI AI Chatbot
+# Multi-Session AI Chatbot Backend
 
 A secure AI-powered chatbot backend built using FastAPI, SQLAlchemy, SQLite, JWT Authentication, Multi-Session Conversations, Chat History Management, and Google Gemini AI.
 
@@ -18,8 +18,8 @@ This project demonstrates authentication, authorization, AI integration, convers
 * Protected Routes
 * Google Gemini AI Integration
 * User-specific Chat Storage
-* Conversation Memory
 * Multi-Session Conversations
+* Conversation Memory
 * Create Conversation
 * Update Conversation
 * Delete Conversation
@@ -29,7 +29,7 @@ This project demonstrates authentication, authorization, AI integration, convers
 * Cascade Delete Support
 * SQLite Database Integration
 * Secure API Access using Bearer Token
-* Route-based Project Structure
+* Route-Based Project Structure
 
 ---
 
@@ -50,14 +50,14 @@ This project demonstrates authentication, authorization, AI integration, convers
 # Project Structure
 
 ```text
-fastapi-ai-chatbot/
+multi-session-ai-chatbot/
 │
 ├── main.py
 ├── database.py
 ├── models.py
+├── schemas.py
 ├── auth.py
 ├── ai_service.py
-├── schemas.py
 │
 ├── routes/
 │   ├── auth_routes.py
@@ -66,6 +66,7 @@ fastapi-ai-chatbot/
 ├── requirements.txt
 ├── .env
 ├── .gitignore
+├── users_chat.db
 └── README.md
 ```
 
@@ -85,13 +86,13 @@ fastapi-ai-chatbot/
 
 ## Conversation APIs
 
-| Method | Endpoint                        | Description               |
-| ------ | ------------------------------- | ------------------------- |
-| POST   | /conversation                   | Create a conversation     |
-| GET    | /conversations                  | Get all conversations     |
-| GET    | /conversation/{conversation_id} | Get conversation details  |
-| PUT    | /conversation/{conversation_id} | Update conversation title |
-| DELETE | /conversation/{conversation_id} | Delete conversation       |
+| Method | Endpoint                        | Description                |
+| ------ | ------------------------------- | -------------------------- |
+| POST   | /conversation                   | Create a conversation      |
+| GET    | /conversations                  | Get all user conversations |
+| GET    | /conversation/{conversation_id} | Get conversation details   |
+| PUT    | /conversation/{conversation_id} | Update conversation title  |
+| DELETE | /conversation/{conversation_id} | Delete conversation        |
 
 ---
 
@@ -180,6 +181,27 @@ Return Response
 
 ---
 
+# Conversation Architecture
+
+```text
+User
+ │
+ ├── Conversation 1
+ │      ├── User Message
+ │      ├── AI Message
+ │      └── User Message
+ │
+ ├── Conversation 2
+ │      ├── User Message
+ │      └── AI Message
+ │
+ └── Conversation 3
+        ├── User Message
+        └── AI Message
+```
+
+---
+
 # Database Relationships
 
 ```text
@@ -212,13 +234,16 @@ Conversation deletion automatically removes related chat messages using SQLAlche
 * [x] User Registration
 * [x] User Login
 * [x] Password Hashing
+* [x] Email Validation
+* [x] Username Validation
+* [x] Password Policy Validation
 * [x] JWT Authentication
 * [x] Protected Routes
-* [x] Gemini AI Integration
+* [x] Google Gemini AI Integration
 * [x] Conversation Management
 * [x] Multi-Session Conversations
 * [x] Chat History
-* [x] Delete Chat Message
+* [x] Delete Single Chat Message
 * [x] Delete Conversation
 * [x] Cascade Delete
 * [x] Database Relationships
@@ -228,14 +253,13 @@ Conversation deletion automatically removes related chat messages using SQLAlche
 # Future Enhancements
 
 * Auto Conversation Title Generation
-* PDF Upload & Document Chat
-* Image Upload & Analysis
 * Google OAuth Login
 * Refresh Tokens
 * Role-Based Access Control (RBAC)
 * Rate Limiting
 * Docker Support
 * PostgreSQL Migration
+* Streaming AI Responses
 * AWS / GCP Deployment
 * Admin Dashboard
 
@@ -250,24 +274,34 @@ git clone https://github.com/pooojajadhav242/fastapi-ai-chatbot.git
 cd fastapi-ai-chatbot
 ```
 
+---
+
 ## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
+---
+
 ## Configure Environment Variables
 
+Create a `.env` file:
+
 ```env
-GEMINI_API_KEY=your_api_key_here
-SECRET_KEY=your_secret_key_here
+GEMINI_API_KEY=your_gemini_api_key
+SECRET_KEY=your_secret_key
 ```
+
+---
 
 ## Run Application
 
 ```bash
 uvicorn main:app --reload
 ```
+
+---
 
 ## Open Swagger Documentation
 
@@ -277,8 +311,38 @@ http://127.0.0.1:8000/docs
 
 ---
 
+# Example Workflow
+
+```text
+Register
+   ↓
+Login
+   ↓
+Get JWT Token
+   ↓
+Create Conversation
+   ↓
+Ask AI
+   ↓
+Store Chat History
+   ↓
+Continue Conversation
+   ↓
+Create Another Conversation
+   ↓
+Maintain Independent Chat Memory
+```
+
+---
+
 # Author
 
 **Pooja Shewale**
 
 AI Engineer | FastAPI Developer | Machine Learning Enthusiast
+
+---
+
+# License
+
+This project is intended for learning, portfolio building, and educational purposes.
