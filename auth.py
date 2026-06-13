@@ -1,38 +1,56 @@
-from passlib.hash import pbkdf2_sha256
-from jose import jwt, JWTError
 from datetime import datetime, timedelta
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer
-from fastapi.security import HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
-from dotenv import load_dotenv
 import os
 
+from dotenv import load_dotenv
+from fastapi import Depends, HTTPException
+from fastapi.security import (
+    HTTPAuthorizationCredentials,
+    HTTPBearer
+)
+from jose import JWTError, jwt
+from passlib.hash import pbkdf2_sha256
+from sqlalchemy.orm import Session
 
 from database import get_db
 from models import User
 
-security = HTTPBearer()
+
+# =====================================
+# Configuration
+# =====================================
 
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
-def hash_password(password: str):
+security = HTTPBearer()
+
+
+# =====================================
+# Password Utilities
+# =====================================
+
+def hash_password(password: str) -> str:
     return pbkdf2_sha256.hash(password)
 
 
 def verify_password(
     plain_password: str,
     hashed_password: str
-):
+) -> bool:
+
     return pbkdf2_sha256.verify(
         plain_password,
         hashed_password
     )
 
-def create_access_token(data: dict):
+
+# =====================================
+# JWT Token Utilities
+# =====================================
+
+def create_access_token(data: dict) -> str:
 
     to_encode = data.copy()
 
@@ -65,16 +83,20 @@ def verify_token(token: str):
 
     except JWTError:
 
-        return None    
+        return None
+
+
+# =====================================
+# Authentication Dependency
+# =====================================
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ) -> User:
-    """
-    Dependency to authenticate tokens and inject the current User object.
-    """
+
     token = credentials.credentials
+
     payload = verify_token(token)
 
     if not payload or "sub" not in payload:
@@ -84,7 +106,12 @@ def get_current_user(
         )
 
     email = payload["sub"]
-    user = db.query(User).filter(User.email == email).first()
+
+    user = (
+        db.query(User)
+        .filter(User.email == email)
+        .first()
+    )
 
     if not user:
         raise HTTPException(
@@ -92,4 +119,4 @@ def get_current_user(
             detail="User not found"
         )
 
-    return user        
+    return user

@@ -92,4 +92,15 @@ class LoginRequest(BaseModel):
 # =====================================
 
 class AIRequest(BaseModel):
+    conversation_id:int
     question:str
+
+# =====================================
+# Conversion Schema
+# =====================================    
+
+class ConversationRequest(BaseModel):
+    title:str
+
+class UpdateConversationRequest(BaseModel):
+    title: str    

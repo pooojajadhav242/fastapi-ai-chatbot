@@ -1,19 +1,47 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import (
+    declarative_base,
+    sessionmaker,
+)
 
-DATABASE_URL = "sqlite:///./users.db"
 
-engine = create_engine(DATABASE_URL)
+# =====================================
+# Database Configuration
+# =====================================
+
+DATABASE_URL = "sqlite:///./users_chat.db"
+
+
+# =====================================
+# Database Engine
+# =====================================
+
+engine = create_engine(
+    DATABASE_URL
+)
+
+
+# =====================================
+# Session Factory
+# =====================================
 
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
-    bind=engine
+    bind=engine,
 )
+
+
+# =====================================
+# Base Model
+# =====================================
 
 Base = declarative_base()
 
+
+# =====================================
+# Database Dependency
+# =====================================
 
 def get_db():
 

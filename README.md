@@ -1,12 +1,12 @@
 # FastAPI AI Chatbot
 
-A secure AI-powered chatbot backend built using FastAPI, SQLAlchemy, SQLite, JWT Authentication, User Management, Chat History, Conversation Memory, and Google Gemini AI.
+A secure AI-powered chatbot backend built using FastAPI, SQLAlchemy, SQLite, JWT Authentication, Multi-Session Conversations, Chat History Management, and Google Gemini AI.
 
-This project demonstrates authentication, authorization, database integration, AI integration, chat persistence, and clean project architecture using modern backend development practices.
+This project demonstrates authentication, authorization, AI integration, conversation memory, chat persistence, database relationships, and modern backend development practices.
 
 ---
 
-## Features
+# Features
 
 * User Registration
 * User Login
@@ -19,36 +19,42 @@ This project demonstrates authentication, authorization, database integration, A
 * Google Gemini AI Integration
 * User-specific Chat Storage
 * Conversation Memory
+* Multi-Session Conversations
+* Create Conversation
+* Update Conversation
+* Delete Conversation
+* List Conversations
 * Chat History Retrieval
-* Delete Single Chat
-* Delete All Chats
+* Delete Single Chat Message
+* Cascade Delete Support
 * SQLite Database Integration
 * Secure API Access using Bearer Token
 * Route-based Project Structure
 
 ---
 
-## Tech Stack
+# Tech Stack
 
 * FastAPI
 * Python
-* SQLAlchemy
+* SQLAlchemy ORM
 * SQLite
 * Pydantic
 * JWT Authentication
 * Google Gemini AI
+* Passlib
 * Git & GitHub
 
 ---
 
-## Project Structure
+# Project Structure
 
 ```text
 fastapi-ai-chatbot/
 │
 ├── main.py
-├── models.py
 ├── database.py
+├── models.py
 ├── auth.py
 ├── ai_service.py
 ├── schemas.py
@@ -65,9 +71,9 @@ fastapi-ai-chatbot/
 
 ---
 
-## API Endpoints
+# API Endpoints
 
-### Authentication APIs
+## Authentication APIs
 
 | Method | Endpoint   | Description                  |
 | ------ | ---------- | ---------------------------- |
@@ -75,20 +81,33 @@ fastapi-ai-chatbot/
 | POST   | /login     | Login and generate JWT token |
 | GET    | /protected | Verify JWT token             |
 
-### Chat APIs
+---
 
-| Method | Endpoint                | Description           |
-| ------ | ----------------------- | --------------------- |
-| POST   | /ask-ai                 | Ask Gemini AI         |
-| GET    | /chat-history           | Get user chat history |
-| DELETE | /chat-history/{chat_id} | Delete a single chat  |
-| DELETE | /chat-history           | Delete all chats      |
+## Conversation APIs
+
+| Method | Endpoint                        | Description               |
+| ------ | ------------------------------- | ------------------------- |
+| POST   | /conversation                   | Create a conversation     |
+| GET    | /conversations                  | Get all conversations     |
+| GET    | /conversation/{conversation_id} | Get conversation details  |
+| PUT    | /conversation/{conversation_id} | Update conversation title |
+| DELETE | /conversation/{conversation_id} | Delete conversation       |
 
 ---
 
-## Database Models
+## Chat APIs
 
-### User
+| Method | Endpoint                        | Description               |
+| ------ | ------------------------------- | ------------------------- |
+| POST   | /ask-ai                         | Ask Gemini AI             |
+| GET    | /chat-history/{conversation_id} | Get conversation messages |
+| DELETE | /chat-history/{chat_id}         | Delete a single message   |
+
+---
+
+# Database Models
+
+## User
 
 | Field    | Type    |
 | -------- | ------- |
@@ -97,18 +116,31 @@ fastapi-ai-chatbot/
 | email    | String  |
 | password | String  |
 
-### ChatMessage
+---
+
+## Conversation
 
 | Field   | Type        |
 | ------- | ----------- |
 | id      | Integer     |
+| title   | String      |
 | user_id | Foreign Key |
-| role    | String      |
-| message | Text        |
 
 ---
 
-## Authentication Flow
+## ChatMessage
+
+| Field           | Type        |
+| --------------- | ----------- |
+| id              | Integer     |
+| conversation_id | Foreign Key |
+| user_id         | Foreign Key |
+| role            | String      |
+| message         | Text        |
+
+---
+
+# Authentication Flow
 
 ```text
 User Registration
@@ -120,20 +152,20 @@ User Login
 Generate JWT Token
         ↓
 Access Protected APIs
-        ↓
-Ask Gemini AI
 ```
 
 ---
 
-## AI Chat Flow
+# AI Chat Flow
 
 ```text
 User Question
       ↓
 JWT Verification
       ↓
-Load Previous Chat History
+Validate Conversation
+      ↓
+Load Previous Messages
       ↓
 Build Conversation Context
       ↓
@@ -148,87 +180,96 @@ Return Response
 
 ---
 
-## Security Features
+# Database Relationships
+
+```text
+User
+ │
+ └── Conversation
+        │
+        └── ChatMessage
+```
+
+Conversation deletion automatically removes related chat messages using SQLAlchemy Cascade Delete.
+
+---
+
+# Security Features
 
 * Password Hashing
 * JWT Authentication
 * Protected API Endpoints
 * Input Validation
 * Email Validation
+* Username Validation
 * Strong Password Validation
 * User Isolation using JWT
 
 ---
 
-## Current Progress
+# Current Progress
 
 * [x] User Registration
-* [x] Password Hashing
-* [x] Email Validation
-* [x] Username Validation
-* [x] Password Policy Validation
 * [x] User Login
+* [x] Password Hashing
 * [x] JWT Authentication
 * [x] Protected Routes
 * [x] Gemini AI Integration
-* [x] User-specific Chat Storage
-* [x] Chat History Retrieval API
-* [x] Conversation Memory
-* [x] Delete Single Chat
-* [x] Delete All Chats
-* [ ] Multiple Chat Sessions
-* [ ] Google Login
-* [ ] Refresh Tokens
-* [ ] Role-Based Authorization
-* [ ] Docker Support
-* [ ] Deployment
+* [x] Conversation Management
+* [x] Multi-Session Conversations
+* [x] Chat History
+* [x] Delete Chat Message
+* [x] Delete Conversation
+* [x] Cascade Delete
+* [x] Database Relationships
 
 ---
 
-## Future Enhancements
+# Future Enhancements
 
-* Multiple Chat Sessions
+* Auto Conversation Title Generation
 * PDF Upload & Document Chat
 * Image Upload & Analysis
-* Refresh Tokens
 * Google OAuth Login
+* Refresh Tokens
 * Role-Based Access Control (RBAC)
-* Docker Containerization
-* AWS/GCP Deployment
 * Rate Limiting
+* Docker Support
+* PostgreSQL Migration
+* AWS / GCP Deployment
 * Admin Dashboard
 
 ---
 
-## Getting Started
+# Getting Started
 
-### Clone Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/pooojajadhav242/fastapi-ai-chatbot.git
 cd fastapi-ai-chatbot
 ```
 
-### Install Dependencies
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Create Environment Variables
+## Configure Environment Variables
 
 ```env
 GEMINI_API_KEY=your_api_key_here
 SECRET_KEY=your_secret_key_here
 ```
 
-### Run Application
+## Run Application
 
 ```bash
 uvicorn main:app --reload
 ```
 
-### Open Swagger UI
+## Open Swagger Documentation
 
 ```text
 http://127.0.0.1:8000/docs
@@ -236,7 +277,7 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## Author
+# Author
 
 **Pooja Shewale**
 
